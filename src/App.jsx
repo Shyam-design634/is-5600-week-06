@@ -1,6 +1,9 @@
 // App.jsx
+import React from "react";
 import Header from './components/Header';
-
+import { Route, Routes } from "react-router-dom";
+import CardList from './components/CardList';
+import SingleView from "./components/SingleView";
 import productData from './data/full-products';
 // App.jsx
 // Mock product data
@@ -15,7 +18,12 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <CardList data={mockData}/>
+      <Routes>
+        {/* Route for the product list */}
+        <Route path="/" element={<CardList data={productData} />} />
+        {/* Route for a single product view */}
+        <Route path="/product/:id" element={<SingleView data={productData} />} />
+      </Routes>
     </div>
   );
 }
