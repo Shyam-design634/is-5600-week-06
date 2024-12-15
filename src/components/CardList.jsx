@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from "react";
 import Card from "./Card";
 import Button from "./Button";
+import Search from "./Search"; 
+
 
 const CardList = ({ data }) => {
   const limit = 10;
   const [offset, setOffset] = useState(0);
   const [products, setProducts] = useState(data.slice(0, limit));
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+
+  // Function to filter products by tags
+  const filterTags = (searchValue) => {
+    setSearchTerm(searchValue); // Update search term state
+    const filteredProducts = data.filter((product) =>
+      product.tags.some((tag) =>
+        tag.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+
+    setProducts(filteredProducts.slice(0, limit)); // Set filtered products
+    setOffset(0); // Reset pagination to the first page
+  };
+
 
   const handlePrevious = () => {
     if (offset > 0) {
