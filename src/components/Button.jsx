@@ -1,9 +1,18 @@
-import React from 'react'
+import React from "react";
 
-export default function Button({text, handleClick}) {
+const Button = ({ text, handleClick,  isDisabled  }) => {
   return (
-    <a href="#" className="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4" onClick={handleClick}>
-      <span className="pl1">{text}</span>
-    </a>
-  )
-}
+    <button
+    onClick={handleClick}
+    disabled={isDisabled} // Disable button if isDisabled is true
+    className={`pa2 ba b--black-20 ${
+      isDisabled ? "bg-light-gray" : "bg-light-blue"
+    }`}
+  >
+      {text}
+    </button>
+  );
+};
+
+export default Button;
+
