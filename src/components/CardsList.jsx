@@ -1,5 +1,4 @@
 // CardsList.jsx
-
 const CardList = () => {
     return (
       <div className="cf pa2">
@@ -7,7 +6,7 @@ const CardList = () => {
           <p>Cards go here</p>
         </div>
       </div>
-    )
-  }
+    );
+  };
   
   export default CardList;
