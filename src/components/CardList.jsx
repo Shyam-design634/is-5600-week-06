@@ -23,38 +23,74 @@ const CardList = ({ data }) => {
     setOffset(0); // Reset pagination to the first page
   };
 
+ // Unified pagination handler
+ const handlePagination = (direction) => {
+  const filteredData = searchTerm
+    ? data.filter((product) =>
+        product.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      )
+    : data;
 
-  const handlePrevious = () => {
-    if (offset > 0) {
-      setOffset((prevOffset) => prevOffset - limit);
-    }
-  };
+  if (direction === "next" && offset + limit < filteredData.length) {
+    setOffset((prevOffset) => prevOffset + limit);
+  } else if (direction === "previous" && offset > 0) {
+    setOffset((prevOffset) => prevOffset - limit);
+  }
+};
+// Update displayed products when offset or searchTerm changes
+useEffect(() => {
+  const filteredData = searchTerm
+    ? data.filter((product) =>
+        product.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      )
+    : data;
 
-  const handleNext = () => {
-    if (offset + limit < data.length) {
-      setOffset((prevOffset) => prevOffset + limit);
-    }
-  };
+  const start = offset;
+  const end = offset + limit;
+  setProducts(filteredData.slice(start, end));
+}, [offset, searchTerm, data]);
 
-  useEffect(() => {
-    setProducts(data.slice(offset, offset + limit));
-  }, [offset, limit, data]);
+// Check if Next button should be disabled
+const isNextDisabled = searchTerm
+  ? offset + limit >= data.filter((product) =>
+      product.tags.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    ).length
+  : offset + limit >= data.length;
 
-  return (
-    <div className="cf pa2">
-      <div className="mt2 mb2">
-        {products.map((product) => (
-          <Card key={product.id} {...product} />
-        ))}
-      </div>
-
-      {/* Pagination Buttons */}
-      <div className="flex items-center justify-center pa4">
-        <Button text="Previous" handleClick={handlePrevious} />
-        <Button text="Next" handleClick={handleNext} />
-      </div>
+return (
+  <div className="cf pa2">
+    {/* Search Component */}
+    <div className="mb3">
+      <Search handleSearch={filterTags} />
     </div>
-  );
+
+    {/* Product Cards */}
+    <div className="mt2 mb2">
+      {products.map((product) => (
+        <Card key={product.id} {...product} />
+      ))}
+    </div>
+
+    {/* Pagination Buttons */}
+    <div className="flex items-center justify-center pa4">
+      <Button
+        text="Previous"
+        handleClick={() => handlePagination("previous")}
+      />
+      <Button
+        text="Next"
+        handleClick={() => handlePagination("next")}
+        isDisabled={isNextDisabled} // Pass disabled status
+      />
+    </div>
+  </div>
+);
 };
 
 export default CardList;
